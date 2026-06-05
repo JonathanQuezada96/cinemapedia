@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:cinemapedia/config/router/route.dart';
 import 'package:cinemapedia/config/theme/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -14,11 +15,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp.router(
+    return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       theme: AppTheme().getTheme(),
-      
     );
   }
 }
