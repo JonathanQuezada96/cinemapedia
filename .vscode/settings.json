@@ -2,5 +2,11 @@
     "cSpell.words": [
         "datasource",
         "moviedb"
-    ]
+    ],
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    }
 }
