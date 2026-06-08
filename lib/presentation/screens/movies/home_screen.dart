@@ -6,13 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = 'home-screen';
+
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: _HomeView(),
-      bottomNavigationBar: const CustomBottomNavigation(),
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
@@ -21,13 +22,14 @@ class _HomeView extends ConsumerStatefulWidget {
   const _HomeView();
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  ConsumerState<_HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends ConsumerState<_HomeView> {
   @override
-  initState() {
+  void initState() {
     super.initState();
+
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
   }
 
@@ -35,35 +37,51 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   Widget build(BuildContext context) {
     final slideShowMovies = ref.watch(moviesSlideshowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+
     if (slideShowMovies.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
-    return Column(
-      children: [
-        CustomAppBar(),
-        MoviesSlideshow(movies: slideShowMovies),
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-          title: 'En cines',
-          subTitle: 'Lunes 20',
-          loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-          },
-        ),
 
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: slideShowMovies.length,
-        //     itemBuilder: (context, index) {
-        //       final movie = slideShowMovies[index];
-        //       return ListTile(
-        //         title: Text(movie.title),
-        //         subtitle: Text(movie.overview),
-        //         leading: Image.network(movie.posterPath) ,
-        //       );
-        //     },
-        //   ),
-        // ),
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(title: CustomAppBar()),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            return Column(
+              children: [
+                MoviesSlideshow(movies: slideShowMovies),
+
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'En cines',
+                  subTitle: 'Lunes 20',
+                  loadNextPage: () {
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'En cines',
+                  subTitle: 'Lunes 20',
+                  loadNextPage: () {
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'En cines',
+                  subTitle: 'Lunes 20',
+                  loadNextPage: () {
+                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+              ],
+            );
+          }, childCount: 1),
+        ),
       ],
     );
   }
