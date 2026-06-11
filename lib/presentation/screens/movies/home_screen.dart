@@ -1,3 +1,5 @@
+import 'package:cinemapedia/config/helpers/human_formatter.dart';
+import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
@@ -31,12 +33,21 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
+
     final slideShowMovies = ref.watch(moviesSlideshowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     if (slideShowMovies.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -57,27 +68,44 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
                   title: 'En cines',
-                  subTitle: 'Lunes 20',
+                  subTitle: HumanFormatter.fecha(),
                   loadNextPage: () {
                     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
                   },
                 ),
                 MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: 'En cines',
-                  subTitle: 'Lunes 20',
+                  movies: upcomingMovies,
+                  title: 'Upcoming',
+                  subTitle: HumanFormatter.fecha(),
                   loadNextPage: () {
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
                   },
                 ),
                 MovieHorizontalListview(
-                  movies: nowPlayingMovies,
-                  title: 'En cines',
-                  subTitle: 'Lunes 20',
+                  movies: popularMovies,
+                  title: 'Populares',
+                  subTitle: HumanFormatter.fecha(),
                   loadNextPage: () {
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                    ref.read(popularMoviesProvider.notifier).loadNextPage();
                   },
                 ),
+                MovieHorizontalListview(
+                  movies: topRatedMovies,
+                  title: 'Top',
+                  subTitle: HumanFormatter.fecha(),
+                  loadNextPage: () {
+                    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+                
+                // MovieHorizontalListview(
+                //   movies: nowPlayingMovies,
+                //   title: 'En cines',
+                //   subTitle: 'Lunes 20',
+                //   loadNextPage: () {
+                //     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                //   },
+                // ),
               ],
             );
           }, childCount: 1),
