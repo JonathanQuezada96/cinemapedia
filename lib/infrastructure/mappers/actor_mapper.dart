@@ -7,7 +7,7 @@ class ActorMapper {
     name: cast.name,
     profilePath: cast.profilePath != null
         ? 'https://image.tmdb.org/t/p/w500/${cast.profilePath}'
-        : '/assets/images/no-person.webp',
+        : 'assets/images/no-person.webp',
     character: cast.character,
   );
 }

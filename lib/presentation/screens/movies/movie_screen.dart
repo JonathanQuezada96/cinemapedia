@@ -1,4 +1,5 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/providers/actors/actors_by_movie_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +19,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   void initState() {
     super.initState();
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
+    ref.read(actorsProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
@@ -42,8 +44,6 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
           ),
         ],
       ),
-      // appBar: AppBar(title: Text(movie.title)),
-      // body: Column(),
     );
   }
 }
@@ -56,7 +56,7 @@ class _MovieDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
-    final overview = movie.overview != "" ? movie.overview : "No overview" ;
+    final overview = movie.overview != "" ? movie.overview : "No overview";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,37 +71,104 @@ class _MovieDetails extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               SizedBox(
-                width: (size.width -40 ) * 0.7,
+                width: (size.width - 40) * 0.7,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(movie.title, style:  textStyle.titleLarge,),
-                    Text( overview )
-
+                    Text(movie.title, style: textStyle.titleLarge),
+                    Text(overview),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
 
-        Padding(padding: const EdgeInsets.all(8),
-        child: Wrap(
-          children: [
-            ...movie.genreIds.map((gender) => Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: Chip(label: Text(gender),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              )
-              
-            ))
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Wrap(
+            children: [
+              ...movie.genreIds.map(
+                (gender) => Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Chip(
+                    label: Text(gender),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        ),
-
-        const SizedBox(height: 100,),
+        _ActorsByMovie(movieId: movie.id.toString()),
+        const SizedBox(height: 100),
       ],
-      
+    );
+  }
+}
+
+class _ActorsByMovie extends ConsumerWidget {
+  final String movieId;
+  const _ActorsByMovie({required this.movieId});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final actorsByMovie = ref.watch(actorsProvider);
+    if (actorsByMovie[movieId] == null) {
+      return Center(child: CircularProgressIndicator(strokeWidth: 2));
+    }
+    final actors = actorsByMovie[movieId]!;
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: actors.length,
+        itemBuilder: (context, index) {
+          final actor = actors[index];
+          final isImageNetWork = actor.profilePath.startsWith('http');
+
+          return Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 135,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadiusGeometry.circular(20),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: isImageNetWork
+                        ? Image.network(
+                            actor.profilePath,
+                            height: 180,
+                            width: 135,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            actor.profilePath,
+                            height: 180,
+                            width: 135,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(actor.name, maxLines: 2),
+                Text(
+                  actor.character ?? "",
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
