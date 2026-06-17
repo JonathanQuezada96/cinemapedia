@@ -4,7 +4,8 @@
         "datasource",
         "moviedb",
         "Perame",
-        "tantito"
+        "tantito",
+        "webp"
     ],
     "editor.suggestOnTriggerCharacters": false,
     "editor.quickSuggestions": {
