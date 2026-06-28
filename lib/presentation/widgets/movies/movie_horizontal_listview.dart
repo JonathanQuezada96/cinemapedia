@@ -50,6 +50,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
     return SizedBox(
       height: 350,
       child: Column(
+        
         children: [
           if (widget.title != null || widget.subTitle != null)
             _Title(title: widget.title, subTitle: widget.subTitle),
@@ -101,7 +102,7 @@ class _SLide extends StatelessWidget {
                           );
                         }
                         return GestureDetector(
-                          onTap: () => context.push('movie/${movie.id}'),
+                          onTap: () => context.push('/home/0/movie/${movie.id}'),
                           child: FadeInRight(child: child),
                         );
                       },
