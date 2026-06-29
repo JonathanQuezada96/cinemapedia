@@ -9,14 +9,15 @@ import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await db.into(db.favoriteMovies).insert(FavoriteMoviesCompanion.insert(
-    movieId: 1, 
-    backdropPath: 'backdropPath.png', 
-    originalTitle: 'originalTitle', 
-    posterPath: 'posterPath', 
-    title: 'title',
+  // await db.into(db.favoriteMovies).insert(FavoriteMoviesCompanion.insert(
+  //   movieId: 1, 
+  //   backdropPath: 'backdropPath.png', 
+  //   originalTitle: 'originalTitle', 
+  //   posterPath: 'posterPath', 
+  //   title: 'title',
     
-    ));
+  //   ));
+  // await (db.delete(db.favoriteMovies)).go();
   final movies = await db.select(db.favoriteMovies).get();
   print(movies);
   await dotenv.load(fileName: ".env");
