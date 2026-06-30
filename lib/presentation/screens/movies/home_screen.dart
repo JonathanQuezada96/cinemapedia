@@ -9,20 +9,21 @@ class HomeScreen extends StatelessWidget {
   final int pageIndex;
   final viewRoutes = const <Widget>[
     HomeView(),
-    SizedBox(),
-    FavoritesView()
+    FavoritesView(),
   ];
   const HomeScreen({super.key, required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final selectedIndex = pageIndex == 2 ? 1 : pageIndex.clamp(0, 1);
+
+    return Scaffold(
       body: IndexedStack(
-        index: pageIndex,
+        index: selectedIndex,
         children: viewRoutes,
-        ),
+      ),
       bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: pageIndex,
+        currentIndex: selectedIndex,
       ),
     );
   }
