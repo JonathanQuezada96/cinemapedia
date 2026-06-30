@@ -18,8 +18,8 @@ Future<void> main() async {
     
   //   ));
   // await (db.delete(db.favoriteMovies)).go();
-  final movies = await db.select(db.favoriteMovies).get();
-  print(movies);
+  // final movies = await db.select(db.favoriteMovies).get();
+  // print(movies);
   await dotenv.load(fileName: ".env");
   await initializeDateFormatting('es_MX');
   runApp(const ProviderScope(child: MainApp()));
